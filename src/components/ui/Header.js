@@ -9,10 +9,16 @@ import Button from "@material-ui/core/Button";
 // import Typography from "@material-ui/core/Typography";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
 import {makeStyles} from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {useTheme} from "@material-ui/core/styles";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from '@material-ui/icons/Menu';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import logo from '../../assets/logo_3.png';
 
 
@@ -36,21 +42,21 @@ const useStyle = makeStyles(theme => ({
     toolBarMargin: {
         ...theme.mixins.toolbar,
         marginBottom: "3rem",
-        [theme.breakpoints.down('md')]:{
-            marginBottom:"2em"
+        [theme.breakpoints.down('md')]: {
+            marginBottom: "2em"
         },
-        [theme.breakpoints.down('xs')]:{
-            marginBottom:"1.25em"
+        [theme.breakpoints.down('xs')]: {
+            marginBottom: "1.25em"
         }
     },
     logo: {
         height: "7em",
 
-        [theme.breakpoints.down('md')]:{
-            height:"6em"
+        [theme.breakpoints.down('md')]: {
+            height: "6em"
         },
-        [theme.breakpoints.down('xs')]:{
-            height:"5em"
+        [theme.breakpoints.down('xs')]: {
+            height: "5em"
         }
     },
     logoContainer: {
@@ -89,16 +95,42 @@ const useStyle = makeStyles(theme => ({
         "&:hover": {
             opacity: 1
         }
+    },
+    drawerIconContainer: {
+        marginLeft: "auto",
+        "&:hover": {
+            backgroundColor: "transparent"
+        }
+    },
+    drawer:{
+        backgroundColor:theme.palette.common.DevLightOrange
+    },
+    drawerIcon: {
+        height: "50px",
+        width: "50px"
+    },
+    drawerItem: {
+        ...theme.typography.tab,
+        color: 'white',
+        opacity: 0.7
+    },
+    drawerItemHire: {
+        backgroundColor: theme.palette.common.DevOrange
+    },
+    drawerItemSelected: {
+        opacity: 1
     }
 }))
 
 const Header = (props) => {
     const classes = useStyle();
     const theme = useTheme();
+    const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
     const matches = useMediaQuery(theme.breakpoints.down('md'));
+    const [openDrawer, setOpenDrawer] = useState(false);
     const [value, setValue] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [openMenu, setOpenMenu] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const tabSelectHandler = (e, value) => {
@@ -108,17 +140,17 @@ const Header = (props) => {
     const handleClick = (e) => {
         console.log(e.currentTarget);
         setAnchorEl(e.currentTarget);
-        setOpen(true);
+        setOpenMenu(true);
     }
     const handleMenuItemClick = (e, i) => {
         setAnchorEl(null);
-        setOpen(false);
+        setOpenMenu(false);
         setSelectedIndex(i);
     };
 
     const handleClose = (e) => {
         setAnchorEl(null);
-        setOpen(false);
+        setOpenMenu(false);
     }
 
     const menuOptions = [{name: "Services", link: "/services"}, {
@@ -126,16 +158,13 @@ const Header = (props) => {
         link: "/mobileapps"
     }, {name: "Web App Development", link: "/webapps"}, {name: "UI/UX Design", link: "/uiux"}];
 
+    const routes = [{name: "Home", link: "/", activeIndex: 0}, {name: "About", link: "/about", activeIndex: 1}, {
+        name: "Services",
+        link: "/services"
+        , activeIndex: 2
+    }, {name: "Contact", link: "/contact", activeIndex: 3}]
+
     useEffect(() => {
-        if (window.location.pathname === "/" && value !== 0) {
-            setValue(0);
-        } else if (window.location.pathname === "/about" && value !== 1) {
-            setValue(1);
-        } else if (window.location.pathname === "/services" && value !== 2) {
-            setValue(2);
-        } else if (window.location.pathname === "/contact" && value !== 3) {
-            setValue(3);
-        }
         switch (window.location.pathname) {
             case "/":
                 if (value !== 0) {
@@ -199,14 +228,15 @@ const Header = (props) => {
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
-                open={open}
+                open={openMenu}
                 onClose={handleClose}
                 classes={{paper: classes.menu}}
                 MenuListProps={{onMouseLeave: handleClose}}
                 elevation={0}
+                keepMounted
             >
                 {menuOptions.map((option, i) => (
-                    <MenuItem key={option} onClick={(event) => {
+                    <MenuItem key={`${option}${i}`} onClick={(event) => {
                         handleMenuItemClick(event, i);
                         setValue(2);
                         handleClose(event)
@@ -214,6 +244,40 @@ const Header = (props) => {
                               to={option.link} classes={{root: classes.menuItem}}>{option.name}</MenuItem>
                 ))}
             </Menu>
+        </React.Fragment>
+    );
+    const drawer = (
+        <React.Fragment>
+            <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS} open={openDrawer}
+                             onClose={() => setOpenDrawer(
+                                 false
+                             )} onOpen={() => setOpenDrawer(true)} classes={{paper:classes.drawer}}>
+                <List disablePadding>
+                    {routes.map((routes, index) => (
+                        <ListItem key={index} divider button component={Link} to={routes.link}
+                                  selected={value === routes.activeIndex} onClick={() => {
+                            setOpenDrawer(false);
+                            setValue(routes.activeIndex)
+                        }}>
+                            <ListItemText
+                                className={value === routes.activeIndex ? [classes.drawerItem, classes.drawerItemSelected] : classes.drawerItem}
+                                disableTypography>{routes.name}</ListItemText>
+                        </ListItem>
+                    ))}
+                    <ListItem divider button className={classes.drawerItemHire}
+                              onClick={() => {
+                                  setOpenDrawer(false);
+                              }}>
+                        <ListItemText
+                            className={classes.drawerItem}
+                            disableTypography>Hire me</ListItemText>
+                    </ListItem>
+                </List>
+            </SwipeableDrawer>
+            <IconButton onClick={() => setOpenDrawer(!openDrawer)} disableRipple
+                        className={classes.drawerIconContainer}>
+                <MenuIcon className={classes.drawerIcon}/>
+            </IconButton>
         </React.Fragment>
     );
 
@@ -226,7 +290,7 @@ const Header = (props) => {
                                 onClick={() => setValue(0)}>
                             <img alt={"company logo"} className={classes.logo} src={logo}/>
                         </Button>
-                        {matches ? null : tabs}
+                        {matches ? drawer : tabs}
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>
