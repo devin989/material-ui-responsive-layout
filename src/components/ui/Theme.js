@@ -1,16 +1,16 @@
 import {createMuiTheme} from '@material-ui/core/styles';
 
-const DevOrange = "#ff5722"
+const DevBlue = "#111d5e"
 const DevLightOrange = "#ff9100";
 export default createMuiTheme({
     palette: {
         common: {
-            DevOrange: `${DevOrange}`,
-            DevLightOrange: `${DevLightOrange}`
+            Blue: `${DevBlue}`,
+            LightOrange: `${DevLightOrange}`
 
         },
         primary:{
-            main:`${DevOrange}`
+            main:`${DevBlue}`
         },
         secondary:{
             main:`${DevLightOrange}`
@@ -29,6 +29,31 @@ export default createMuiTheme({
             color:"white",
             fontSize:"1em",
             textTransform:"none",
+        },
+        h2:{
+            fontFamily:"Raleway",
+            fontWeight:700,
+            fontSize:"3rem",
+            color:DevBlue,
+           lineHeight:1.5
+        },
+        h3:{
+            fontFamily:"Raleway",
+            fontWeight:700,
+            fontSize:"2.5rem",
+            color:DevBlue,
+            lineHeight:1.5
+        },
+        h4:{
+            fontFamily:"Raleway",
+            fontWeight:700,
+            fontSize:"2rem",
+            color:DevBlue,
+            lineHeight:1.5
+        },
+        subtitle1:{
+            lineHeight:2.5
         }
+
     }
 })

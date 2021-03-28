@@ -3,6 +3,8 @@ import {ThemeProvider} from '@material-ui/core/styles';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import theme from './ui/Theme';
 import Header from "./ui/Header";
+import Footer from "./ui/Footer";
+import LandingPage from "./LandingPage";
 
 const App = () => {
     return (
@@ -10,7 +12,7 @@ const App = () => {
             <BrowserRouter>
                 <Header/>
                 <Switch>
-                    <Route exact path={"/"} component={() => <div style={{width:"100%",height:"100%",backgroundColor:"yellow"}}>Home</div>}/>
+                    <Route exact path={"/"} component={LandingPage}/>
                     <Route exact path={"/about"} component={() => <div>about</div>}/>
                     <Route exact path={"/services"} component={() => <div>services</div>}/>
                     <Route exact path={"/mobileapps"} component={() => <div>mobile</div>}/>
@@ -20,7 +22,7 @@ const App = () => {
                     <Route exact path={"/hire"} component={() => <div>hire</div>}/>
 
                 </Switch>
-
+                <Footer/>
             </BrowserRouter>
         </ThemeProvider>
     );
