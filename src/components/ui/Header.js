@@ -19,7 +19,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import logo from '../../assets/logo_3.png';
+import logo from '../../assets/logo4.png';
 
 
 function ElevationScroll(props) {
@@ -43,11 +43,14 @@ const useStyle = makeStyles(theme => ({
         ...theme.mixins.toolbar,
         marginBottom: "3rem",
         [theme.breakpoints.down('md')]: {
-            marginBottom: "2em"
+            marginBottom: "1.5em"
         },
         [theme.breakpoints.down('xs')]: {
             marginBottom: "1.25em"
         }
+    },
+    appbar: {
+        zIndex: theme.zIndex.modal + 1,
     },
     logo: {
         height: "7em",
@@ -82,10 +85,13 @@ const useStyle = makeStyles(theme => ({
         marginLeft: "25px",
         marginRight: "75px",
         borderRadius: "10px",
-        height: "35px"
+        height: "35px",
+        "&:hover":{
+            backgroundColor:theme.palette.secondary.light
+        }
     },
     menu: {
-        backgroundColor: theme.palette.common.DevLightOrange,
+        backgroundColor: theme.palette.common.LightOrange,
         color: "white",
 
     },
@@ -102,8 +108,8 @@ const useStyle = makeStyles(theme => ({
             backgroundColor: "transparent"
         }
     },
-    drawer:{
-        backgroundColor:theme.palette.common.DevLightOrange
+    drawer: {
+        backgroundColor: theme.palette.common.LightOrange
     },
     drawerIcon: {
         height: "50px",
@@ -115,10 +121,13 @@ const useStyle = makeStyles(theme => ({
         opacity: 0.7
     },
     drawerItemHire: {
-        backgroundColor: theme.palette.common.DevOrange
+        backgroundColor: theme.palette.common.LightOrange
     },
     drawerItemSelected: {
-        opacity: 1
+        "& .MuiListItemText-root": {
+            opacity: 1
+        }
+
     }
 }))
 
@@ -222,7 +231,7 @@ const Header = (props) => {
                      onMouseOver={(e) => handleClick(e)} label={"Services"}/>
                 <Tab className={classes.tab} component={Link} to={"/contact"} label={"Contact"}/>
             </Tabs>
-            <Button variant={'contained'} color={'primary'} className={classes.button}>
+            <Button variant={'contained'} color={'secondary'} className={classes.button}>
                 Hire me
             </Button>
             <Menu
@@ -233,6 +242,7 @@ const Header = (props) => {
                 classes={{paper: classes.menu}}
                 MenuListProps={{onMouseLeave: handleClose}}
                 elevation={0}
+                style={{zIndex:1302}}
                 keepMounted
             >
                 {menuOptions.map((option, i) => (
@@ -251,20 +261,22 @@ const Header = (props) => {
             <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS} open={openDrawer}
                              onClose={() => setOpenDrawer(
                                  false
-                             )} onOpen={() => setOpenDrawer(true)} classes={{paper:classes.drawer}}>
+                             )} onOpen={() => setOpenDrawer(true)} classes={{paper: classes.drawer}}>
+                <div className={classes.toolBarMargin}/>
                 <List disablePadding>
                     {routes.map((routes, index) => (
                         <ListItem key={index} divider button component={Link} to={routes.link}
-                                  selected={value === routes.activeIndex} onClick={() => {
+                                  selected={value === routes.activeIndex}
+                                  classes={{selected: classes.drawerItemSelected}} onClick={() => {
                             setOpenDrawer(false);
                             setValue(routes.activeIndex)
                         }}>
                             <ListItemText
-                                className={value === routes.activeIndex ? [classes.drawerItem, classes.drawerItemSelected] : classes.drawerItem}
+                                className={classes.drawerItem}
                                 disableTypography>{routes.name}</ListItemText>
                         </ListItem>
                     ))}
-                    <ListItem divider button className={classes.drawerItemHire}
+                    <ListItem divider button classes={{root: classes.drawerItemHire,selected: classes.drawerItemSelected}}
                               onClick={() => {
                                   setOpenDrawer(false);
                               }}>
@@ -284,7 +296,7 @@ const Header = (props) => {
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar style={{background: '#FFFFFF'}}>
+                <AppBar style={{background: '#FFFFFF'}} position={"fixed"} className={classes.appbar}>
                     <Toolbar disableGutters={true}>
                         <Button component={Link} to={'/'} className={classes.logoContainer} disableRipple
                                 onClick={() => setValue(0)}>
